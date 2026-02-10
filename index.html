@@ -3,23 +3,52 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>¿San Valentín conmigo? 💘</title>
+  <title>Para Cata 💌</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <canvas id="bg"></canvas>
 
-  <main class="ui">
-    <h1 id="title">Tengo una pregunta importante…</h1>
-    <p id="line">Este San Valentín quiero vivir algo especial contigo ✨</p>
-    <div class="actions">
-      <button id="yes">Sí 💖</button>
-      <button id="no">No 🙈</button>
+  <!-- ETAPA 1: Sobre -->
+  <section id="envelope-scene" class="scene active">
+    <p class="hint">Toca el sobre</p>
+    <div id="envelope">
+      <div class="envelope-back"></div>
+      <div class="letter" id="letter">
+        <div class="letter-content">
+          <p class="letter-greeting">Para ti, Cata...</p>
+          <div class="letter-heart">&#10084;</div>
+        </div>
+      </div>
+      <div class="envelope-front"></div>
+      <div class="envelope-flap" id="flap"></div>
     </div>
-    <p id="out"></p>
-  </main>
+  </section>
 
-  <!-- GSAP desde CDN -->
+  <!-- ETAPA 2: Carta / Pregunta -->
+  <section id="question-scene" class="scene">
+    <div class="card" id="card">
+      <p class="card-intro">Este 14 de febrero quiero vivirlo contigo...</p>
+      <h1 class="card-question">Cata, ¿quieres ser mi cita de San Valentín?</h1>
+      <div class="actions" id="actions">
+        <button id="yes">¡Sí, quiero!</button>
+        <button id="no">No</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ETAPA 3: Celebración -->
+  <section id="celebration-scene" class="scene">
+    <div class="celeb-content" id="celeb-content">
+      <div class="big-heart" id="big-heart">&#10084;</div>
+      <h1 class="celeb-title">¡Sabía que dirías que sí!</h1>
+      <p class="celeb-sub">Prepárate para la mejor cita de tu vida, Cata</p>
+      <p class="celeb-emoji">&#10084;&#65039;</p>
+    </div>
+  </section>
+
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="app.js"></script>
 </body>
