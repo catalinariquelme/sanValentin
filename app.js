@@ -67,7 +67,8 @@ function openEnvelope() {
       y: -180,
       rotation: -2,
       duration: 0.8,
-      ease: 'power2.out'
+      ease: 'power2.out',
+      onStart() { envLetter.style.zIndex = 5; }
     }, '-=0.5')
     .to(envLetter, {
       y: -260,
