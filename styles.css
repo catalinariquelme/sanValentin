@@ -5,7 +5,7 @@ html, body {
   overflow: hidden;
   font-family: 'Inter', system-ui, sans-serif;
   color: #fff;
-  background: #08080f;
+  background: #282a36;
 }
 
 #bg { position: fixed; inset: 0; z-index: 0; }
@@ -102,7 +102,7 @@ html, body {
 /* Scene transition flash */
 .scene-flash {
   position: fixed; inset: 0;
-  background: radial-gradient(circle at 50% 45%, rgba(255, 120, 170, 0.5) 0%, rgba(8, 8, 15, 1) 70%);
+  background: radial-gradient(circle at 50% 45%, rgba(255, 120, 170, 0.5) 0%, rgba(40, 42, 54, 1) 70%);
   z-index: 15;
   opacity: 0;
   pointer-events: none;
