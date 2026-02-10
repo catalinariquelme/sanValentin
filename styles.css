@@ -73,12 +73,6 @@ html, body {
   clip-path: polygon(0 0, 50% 100%, 100% 0);
   transform-origin: top center;
   z-index: 4;
-  transition: transform 0.8s cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-#envelope.open .env-flap {
-  transform: rotateX(180deg);
-  z-index: 0;
 }
 
 .env-letter {
@@ -90,11 +84,28 @@ html, body {
   border-radius: 6px;
   z-index: 2;
   display: flex; align-items: center; justify-content: center;
-  transition: transform 0.9s cubic-bezier(0.33, 1, 0.68, 1) 0.35s;
 }
 
-#envelope.open .env-letter {
-  transform: translateY(-120%);
+/* Glow from inside envelope */
+.env-glow {
+  position: fixed;
+  left: 50%; top: 50%;
+  width: 0; height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 59, 122, 0.35) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9;
+  opacity: 0;
+}
+
+/* Scene transition flash */
+.scene-flash {
+  position: fixed; inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(255, 120, 170, 0.5) 0%, rgba(8, 8, 15, 1) 70%);
+  z-index: 15;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .env-hint {
