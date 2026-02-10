@@ -23,25 +23,92 @@ entryTl
   .from('#envelope', { opacity: 0, y: 36, scale: 0.94, duration: 1 }, '-=0.5')
   .to('.env-hint', { opacity: 0.35, duration: 0.8 }, '-=0.3');
 
+const envFlap   = $('.env-flap');
+const envLetter = $('#letter');
+const envGlow   = $('#env-glow');
+const flash     = $('#scene-flash');
+
 envelope.addEventListener('click', openEnvelope);
 
 function openEnvelope() {
   envelope.removeEventListener('click', openEnvelope);
 
-  gsap.to('.env-hint', { opacity: 0, duration: 0.2 });
-  envelope.classList.add('open');
+  const tl = gsap.timeline({
+    onComplete() {
+      scenes.envelope.classList.remove('active');
+      showQuestion();
+    }
+  });
 
-  setTimeout(() => {
-    gsap.to(scenes.envelope, {
-      opacity: 0,
-      duration: 0.9,
+  tl
+    // 1. Hide hint + subtle anticipation bump
+    .to('.env-hint', { opacity: 0, duration: 0.15 })
+    .to(envelope, {
+      scale: 1.04,
+      duration: 0.25,
+      ease: 'power2.out'
+    }, '<')
+    .to(envelope, {
+      scale: 1,
+      duration: 0.2,
+      ease: 'power2.in'
+    })
+
+    // 2. Flap opens
+    .to(envFlap, {
+      rotateX: 180,
+      duration: 0.7,
       ease: 'power2.inOut',
-      onComplete() {
-        scenes.envelope.classList.remove('active');
-        showQuestion();
-      }
-    });
-  }, 1400);
+      onComplete() { envFlap.style.zIndex = 0; }
+    })
+
+    // 3. Inner glow blooms as envelope opens
+    .to(envGlow, {
+      width: '320px',
+      height: '320px',
+      opacity: 1,
+      duration: 0.8,
+      ease: 'power2.out'
+    }, '-=0.4')
+
+    // 4. Letter floats out — rises, slight rotation, gentle scale
+    .to(envLetter, {
+      y: -180,
+      rotation: -2,
+      duration: 0.8,
+      ease: 'power2.out'
+    }, '-=0.5')
+    .to(envLetter, {
+      y: -260,
+      rotation: 0,
+      scale: 1.15,
+      duration: 0.6,
+      ease: 'power3.inOut'
+    })
+
+    // 5. Letter zooms toward camera + everything fades
+    .to(envLetter, {
+      scale: 8,
+      opacity: 0,
+      y: -300,
+      duration: 0.7,
+      ease: 'power3.in'
+    }, '-=0.15')
+    .to('.env-to', { opacity: 0, y: -20, duration: 0.4 }, '<')
+    .to(envelope, { opacity: 0, duration: 0.4 }, '<')
+    .to(envGlow, {
+      width: '600px',
+      height: '600px',
+      opacity: 0,
+      duration: 0.5
+    }, '<')
+
+    // 6. Soft pink flash for transition
+    .to(flash, { opacity: 1, duration: 0.3, ease: 'power2.in' }, '-=0.3')
+    .to(flash, { opacity: 0, duration: 0.8, ease: 'power2.out' }, '+=0.1')
+
+    // 7. Fade out scene
+    .to(scenes.envelope, { opacity: 0, duration: 0.01 }, '<');
 }
 
 // ============================================================
