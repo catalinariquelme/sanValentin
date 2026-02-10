@@ -3,59 +3,65 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Para Cata 💌</title>
+  <title>Para Cata</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <canvas id="bg"></canvas>
 
-  <!-- ETAPA 1: Sobre -->
-  <section id="envelope-scene" class="scene active">
-    <p class="hint">Toca el sobre</p>
-    <div id="envelope">
-      <div class="envelope-back"></div>
-      <div class="letter" id="letter">
-        <div class="letter-content">
-          <p class="letter-greeting">Para ti, Cata...</p>
-          <div class="letter-heart">&#10084;</div>
+  <!-- Scene 1: Envelope -->
+  <section id="s-envelope" class="scene active">
+    <div class="envelope-wrap">
+      <p class="env-to">Para: Cata</p>
+      <div id="envelope">
+        <div class="env-back"></div>
+        <div class="env-letter" id="letter">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+                     2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
+                     C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5
+                     c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                  fill="rgba(255,59,122,0.5)"/>
+          </svg>
         </div>
+        <div class="env-front"></div>
+        <div class="env-flap"></div>
       </div>
-      <div class="envelope-front">
-        <span class="envelope-label">Para: Cata</span>
-      </div>
-      <div class="envelope-flap" id="flap"></div>
+      <p class="env-hint">toca para abrir</p>
     </div>
   </section>
 
-  <!-- ETAPA 2: Carta / Pregunta -->
-  <section id="question-scene" class="scene">
-    <div class="card" id="card">
-      <p class="card-intro">Este 14 de febrero quiero vivirlo contigo...</p>
-      <h1 class="card-question">Cata, ¿quieres ser mi cita de San Valentín?</h1>
-      <div class="actions" id="actions">
-        <button id="yes">¡Sí, quiero!</button>
+  <!-- Scene 2: Question -->
+  <section id="s-question" class="scene">
+    <div class="msg-wrap">
+      <p class="msg-line" id="line1">Este 14 de febrero...</p>
+      <p class="msg-line" id="line2">quiero vivirlo contigo.</p>
+      <h1 class="msg-question" id="question">Cata, ¿quieres ser mi cita?</h1>
+      <div class="msg-actions" id="actions">
+        <button id="yes">Sí, quiero</button>
         <button id="no">No</button>
       </div>
     </div>
   </section>
 
-  <!-- ETAPA 3: Celebración -->
-  <section id="celebration-scene" class="scene">
-    <div class="celeb-content" id="celeb-content">
-      <div class="big-heart" id="big-heart">&#10084;</div>
-      <h1 class="celeb-title">¡Sabía que dirías que sí!</h1>
-      <div class="voucher" id="voucher">
-        <div class="voucher-edge voucher-edge--left"></div>
-        <div class="voucher-body">
-          <p class="voucher-header">Vale por</p>
-          <p class="voucher-main">Una cena de lo que tú quieras</p>
-          <p class="voucher-footer">Sin límites, sin excusas. Tú eliges.</p>
-        </div>
-        <div class="voucher-edge voucher-edge--right"></div>
+  <!-- Scene 3: Celebration -->
+  <section id="s-celeb" class="scene">
+    <div class="celeb-wrap">
+      <svg class="drawn-heart" viewBox="0 0 200 180" id="drawn-heart">
+        <path d="M100 170 C40 120 0 85 0 50 0 20 25 0 50 0
+                 70 0 90 15 100 35 110 15 130 0 150 0
+                 175 0 200 20 200 50 200 85 160 120 100 170Z"
+              fill="none" stroke="#ff3b7a" stroke-width="2" id="heart-path"/>
+      </svg>
+      <h1 class="celeb-title" id="celeb-title">¡Sabía que dirías que sí!</h1>
+      <div class="celeb-voucher" id="celeb-voucher">
+        <p class="v-label">Vale por</p>
+        <p class="v-main">Una cena de lo que tú quieras</p>
+        <p class="v-detail">Tú eliges. Sin límites.</p>
       </div>
-      <p class="celeb-sub">Te quiero, Cata</p>
+      <p class="celeb-sign" id="celeb-sign">Te quiero, Cata</p>
     </div>
   </section>
 
