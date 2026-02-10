@@ -67,7 +67,8 @@ function openEnvelope() {
       y: -180,
       rotation: -2,
       duration: 0.8,
-      ease: 'power2.out'
+      ease: 'power2.out',
+      onStart() { envLetter.style.zIndex = 5; }
     }, '-=0.5')
     .to(envLetter, {
       y: -260,
@@ -77,30 +78,46 @@ function openEnvelope() {
       ease: 'power3.inOut'
     })
 
-    // 5. Letter zooms toward camera + everything fades
+    // 5. Letter expands to fill the screen (como abriendo la carta)
+    .call(() => {
+      const rect = envLetter.getBoundingClientRect();
+      gsap.set(envLetter, { clearProps: 'y,rotation,scale' });
+      gsap.set(envLetter, {
+        position: 'fixed',
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height,
+        right: 'auto',
+        bottom: 'auto',
+        zIndex: 20
+      });
+      envLetter.querySelector('svg').style.display = 'none';
+    })
     .to(envLetter, {
-      scale: 8,
-      opacity: 0,
-      y: -300,
-      duration: 0.7,
-      ease: 'power3.in'
-    }, '-=0.15')
-    .to('.env-to', { opacity: 0, y: -20, duration: 0.4 }, '<')
-    .to(envelope, { opacity: 0, duration: 0.4 }, '<')
-    // 7. Fade out scene
-    .to(scenes.envelope, { opacity: 0, duration: 0.01 }, '<');
+      left: 0,
+      top: 0,
+      width: '100vw',
+      height: '100vh',
+      borderRadius: 0,
+      duration: 0.9,
+      ease: 'power3.inOut'
+    })
+    .to('.env-to', { opacity: 0, duration: 0.3 }, '<')
+    .to(envelope, { opacity: 0, duration: 0.3 }, '<')
+    .to(scenes.envelope, { opacity: 0, duration: 0.01 });
 }
 
 // ============================================================
 //  Scene 2 — Question (cinematic text reveal)
 // ============================================================
 function showQuestion() {
+  envLetter.style.zIndex = '5';
   scenes.question.classList.add('active');
-  scenes.question.style.opacity = '0';
+  scenes.question.style.opacity = '1';
 
   const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
   tl
-    .to(scenes.question, { opacity: 1, duration: 0.5 })
     .from('#line1', { opacity: 0, y: 22, duration: 0.9 }, '+=0.3')
     .from('#line2', { opacity: 0, y: 22, duration: 0.9 }, '-=0.35')
     .from('#question', { opacity: 0, y: 28, duration: 1.1 }, '+=0.4')
@@ -164,6 +181,7 @@ function celebrate() {
     onComplete() {
       scenes.question.classList.remove('active');
       noBtn.style.display = 'none';
+      envLetter.style.display = 'none';
       showCeleb();
     }
   });
