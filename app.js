@@ -62,49 +62,66 @@ function openEnvelope() {
       onComplete() { envFlap.style.zIndex = 0; }
     })
 
-    // 4. Letter floats out — rises, slight rotation, gentle scale
+    // 3. Letter rises with shadow for depth
     .to(envLetter, {
-      y: -180,
+      y: -160,
       rotation: -2,
-      duration: 0.8,
+      boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+      duration: 0.7,
       ease: 'power2.out',
       onStart() { envLetter.style.zIndex = 5; }
-    }, '-=0.5')
+    }, '-=0.4')
+
+    // 4. Letter floats higher and straightens
     .to(envLetter, {
-      y: -260,
+      y: -240,
       rotation: 0,
-      scale: 1.15,
-      duration: 0.6,
-      ease: 'power3.inOut'
+      scale: 1.1,
+      duration: 0.5,
+      ease: 'power2.inOut'
     })
 
-    // 5. Letter expands to fill the screen (como abriendo la carta)
+    // 5. Gentle pulse before expanding + fade envelope
+    .to(envLetter, {
+      scale: 1.15,
+      boxShadow: '0 30px 80px rgba(0,0,0,0.3)',
+      duration: 0.35,
+      ease: 'power2.out'
+    })
+    .to('.env-to', { opacity: 0, duration: 0.4 }, '<')
+    .to(envelope, { opacity: 0, scale: 0.96, duration: 0.4 }, '<')
+
+    // 6. Switch to fixed centered position and expand to fill screen
     .call(() => {
       const rect = envLetter.getBoundingClientRect();
-      gsap.set(envLetter, { clearProps: 'y,rotation,scale' });
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      gsap.set(envLetter, { clearProps: 'y,rotation,scale,boxShadow' });
       gsap.set(envLetter, {
         position: 'fixed',
-        left: rect.left,
-        top: rect.top,
+        left: cx,
+        top: cy,
+        xPercent: -50,
+        yPercent: -50,
         width: rect.width,
         height: rect.height,
         right: 'auto',
         bottom: 'auto',
-        zIndex: 20
+        zIndex: 20,
+        boxShadow: '0 30px 80px rgba(0,0,0,0.3)'
       });
       envLetter.querySelector('svg').style.display = 'none';
     })
     .to(envLetter, {
-      left: 0,
-      top: 0,
+      left: '50%',
+      top: '50%',
       width: '100vw',
       height: '100vh',
       borderRadius: 0,
-      duration: 0.9,
-      ease: 'power3.inOut'
+      boxShadow: '0 0 0 rgba(0,0,0,0)',
+      duration: 1,
+      ease: 'power4.inOut'
     })
-    .to('.env-to', { opacity: 0, duration: 0.3 }, '<')
-    .to(envelope, { opacity: 0, duration: 0.3 }, '<')
     .to(scenes.envelope, { opacity: 0, duration: 0.01 });
 }
 
