@@ -47,7 +47,6 @@ function showQuestion() {
 
   gsap.to(questionScene, { opacity: 1, duration: 0.5 });
 
-  // Animación escalonada de los elementos de la tarjeta
   gsap.from('.card', {
     y: 60,
     opacity: 0,
@@ -109,7 +108,6 @@ function dodgeButton() {
 
   noBtn.textContent = funnyTexts[Math.min(dodges - 1, funnyTexts.length - 1)];
 
-  // Después de muchos intentos el botón se rinde
   if (dodges >= funnyTexts.length) {
     noBtn.textContent = '¡Sí! ♥';
     noBtn.removeEventListener('mouseenter', dodgeButton);
@@ -119,7 +117,6 @@ function dodgeButton() {
     noBtn.addEventListener('click', celebrate);
   }
 
-  // Hacer el botón "Sí" más grande con cada intento
   const scale = 1 + dodges * 0.06;
   gsap.to(yesBtn, {
     scale: Math.min(scale, 1.5),
@@ -132,14 +129,12 @@ function dodgeButton() {
 yesBtn.addEventListener('click', celebrate);
 
 function celebrate() {
-  // Solo celebrar una vez
   yesBtn.removeEventListener('click', celebrate);
   noBtn.removeEventListener('click', celebrate);
 
-  // Burst en partículas del canvas
-  burstParticles();
+  // Acelerar estrellas
+  celebrationMode = true;
 
-  // Transición de escena
   gsap.to(questionScene, {
     opacity: 0,
     scale: 1.05,
@@ -174,25 +169,23 @@ function showCelebration() {
     delay: 0.3,
     ease: 'power3.out'
   });
+  gsap.from('.voucher', {
+    y: 40,
+    opacity: 0,
+    scale: 0.85,
+    duration: 0.9,
+    delay: 0.6,
+    ease: 'back.out(1.7)'
+  });
   gsap.from('.celeb-sub', {
     y: 20,
     opacity: 0,
     duration: 0.7,
-    delay: 0.5,
+    delay: 1.0,
     ease: 'power3.out'
   });
-  gsap.from('.celeb-emoji', {
-    scale: 0,
-    duration: 0.6,
-    delay: 0.7,
-    ease: 'back.out(3)'
-  });
 
-  // Lluvia continua de corazones
   startHeartRain();
-
-  // Cambiar modo de partículas a "fiesta"
-  celebrationMode = true;
 }
 
 // ─── Lluvia de corazones (DOM) ───
@@ -201,7 +194,7 @@ function startHeartRain() {
   let count = 0;
 
   function spawnHeart() {
-    if (count > 150) return;
+    if (count > 120) return;
     count++;
 
     const el = document.createElement('div');
@@ -223,7 +216,7 @@ function startHeartRain() {
 
 
 // ============================================================
-//  CANVAS — Partículas flotantes formando corazón
+//  CANVAS — Fondo: estrellas suaves + bokeh flotante
 // ============================================================
 const canvas = document.getElementById('bg');
 const ctx = canvas.getContext('2d');
@@ -236,97 +229,99 @@ function resize() {
 addEventListener('resize', resize);
 resize();
 
-// Corazón paramétrico
-function heartPoint(t) {
-  const x = 16 * Math.pow(Math.sin(t), 3);
-  const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-  return { x, y };
-}
-
 const W = () => innerWidth;
 const H = () => innerHeight;
 
-const particles = [];
-const N = Math.min(1000, Math.floor(innerWidth * innerHeight / 1200));
 let celebrationMode = false;
 
-function initParticles() {
-  particles.length = 0;
-  for (let i = 0; i < N; i++) {
-    particles.push({
-      x:  W()/2 + (Math.random() - 0.5) * W(),
-      y:  H()/2 + (Math.random() - 0.5) * H(),
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      a:  Math.random() * Math.PI * 2,
-      r:  Math.random(),
-      hue:  330 + Math.random() * 40,
-      size: 1 + Math.random() * 2.2,
-      alpha: 0.5 + Math.random() * 0.5
-    });
-  }
+// ─── Estrellas pequeñas ───
+const stars = [];
+const NUM_STARS = 180;
+
+for (let i = 0; i < NUM_STARS; i++) {
+  stars.push({
+    x: Math.random() * W(),
+    y: Math.random() * H(),
+    size: 0.5 + Math.random() * 1.8,
+    twinkleSpeed: 1 + Math.random() * 3,
+    twinkleOffset: Math.random() * Math.PI * 2,
+    baseAlpha: 0.3 + Math.random() * 0.5
+  });
 }
-initParticles();
+
+// ─── Bokeh / orbs flotantes ───
+const orbs = [];
+const NUM_ORBS = 20;
+
+for (let i = 0; i < NUM_ORBS; i++) {
+  orbs.push({
+    x: Math.random() * W(),
+    y: Math.random() * H(),
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: -0.1 - Math.random() * 0.3,
+    radius: 15 + Math.random() * 50,
+    hue: 330 + Math.random() * 40,
+    alpha: 0.02 + Math.random() * 0.04,
+    pulseSpeed: 0.5 + Math.random() * 1.5,
+    pulseOffset: Math.random() * Math.PI * 2
+  });
+}
 
 let time = 0;
 
 function animate() {
-  time += 0.005;
+  time += 0.008;
 
-  // Fade-trail del fondo
-  ctx.fillStyle = 'rgba(10, 10, 20, 0.16)';
-  ctx.fillRect(0, 0, W(), H());
+  const w = W();
+  const h = H();
 
-  const scale = Math.min(W(), H()) / 48;
-  const cx = W() / 2;
-  const cy = H() / 2 + 10;
+  // Fondo oscuro con gradiente sutil
+  const grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, '#0a0a14');
+  grad.addColorStop(0.5, '#0e0b18');
+  grad.addColorStop(1, '#12091a');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
 
-  for (const p of particles) {
-    // Punto objetivo en el contorno del corazón
-    const t  = (p.a + time * 0.6) % (Math.PI * 2);
-    const hp = heartPoint(t);
+  // ─── Dibujar orbs (bokeh) ───
+  for (const o of orbs) {
+    const pulse = 1 + 0.3 * Math.sin(time * o.pulseSpeed + o.pulseOffset);
+    const r = o.radius * pulse;
+    const speedMult = celebrationMode ? 2.5 : 1;
 
-    const breathe = celebrationMode
-      ? 1 + 0.15 * Math.sin(time * 4 + p.r * 6)
-      : 0.9 + 0.2 * Math.sin(time * 2 + p.r * 6);
+    o.x += o.vx * speedMult;
+    o.y += o.vy * speedMult;
 
-    const tx = cx + hp.x * scale * breathe;
-    const ty = cy - hp.y * scale * breathe;
+    // Wrap around
+    if (o.y + r < 0) { o.y = h + r; o.x = Math.random() * w; }
+    if (o.x < -r) o.x = w + r;
+    if (o.x > w + r) o.x = -r;
 
-    const dx = tx - p.x;
-    const dy = ty - p.y;
+    const orbAlpha = celebrationMode ? o.alpha * 2.5 : o.alpha;
 
-    // Atracción + swirl
-    const attraction = celebrationMode ? 0.0012 : 0.0005;
-    p.vx += dx * attraction + Math.sin(time + p.r * 10) * 0.004;
-    p.vy += dy * attraction + Math.cos(time + p.r * 10) * 0.004;
+    const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, r);
+    g.addColorStop(0, `hsla(${o.hue}, 80%, 65%, ${orbAlpha * 1.5})`);
+    g.addColorStop(0.5, `hsla(${o.hue}, 70%, 55%, ${orbAlpha * 0.6})`);
+    g.addColorStop(1, `hsla(${o.hue}, 60%, 45%, 0)`);
 
-    // Damping
-    p.vx *= 0.945;
-    p.vy *= 0.945;
-
-    p.x += p.vx;
-    p.y += p.vy;
-
-    // Dibujo
-    const glow = celebrationMode ? 1 : 0.85;
     ctx.beginPath();
-    ctx.fillStyle = `hsla(${p.hue}, 90%, ${65 + Math.sin(time * 3 + p.r) * 10}%, ${p.alpha * glow})`;
-    ctx.arc(p.x, p.y, p.size * (celebrationMode ? 1.3 : 1), 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.arc(o.x, o.y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // ─── Dibujar estrellas ───
+  for (const s of stars) {
+    const twinkle = 0.5 + 0.5 * Math.sin(time * s.twinkleSpeed + s.twinkleOffset);
+    const alpha = s.baseAlpha * twinkle;
+    const size = celebrationMode ? s.size * 1.4 : s.size;
+
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(255, 235, 245, ${alpha})`;
+    ctx.arc(s.x, s.y, size, 0, Math.PI * 2);
     ctx.fill();
   }
 
   requestAnimationFrame(animate);
 }
 animate();
-
-// Explosión de partículas
-function burstParticles() {
-  for (const p of particles) {
-    const ang = Math.random() * Math.PI * 2;
-    const sp  = 3 + Math.random() * 7;
-    p.vx += Math.cos(ang) * sp;
-    p.vy += Math.sin(ang) * sp;
-    p.hue = 330 + Math.random() * 50;
-  }
-}
