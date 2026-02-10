@@ -62,15 +62,6 @@ function openEnvelope() {
       onComplete() { envFlap.style.zIndex = 0; }
     })
 
-    // 3. Inner glow blooms as envelope opens
-    .to(envGlow, {
-      width: '320px',
-      height: '320px',
-      opacity: 1,
-      duration: 0.8,
-      ease: 'power2.out'
-    }, '-=0.4')
-
     // 4. Letter floats out — rises, slight rotation, gentle scale
     .to(envLetter, {
       y: -180,
@@ -96,17 +87,6 @@ function openEnvelope() {
     }, '-=0.15')
     .to('.env-to', { opacity: 0, y: -20, duration: 0.4 }, '<')
     .to(envelope, { opacity: 0, duration: 0.4 }, '<')
-    .to(envGlow, {
-      width: '600px',
-      height: '600px',
-      opacity: 0,
-      duration: 0.5
-    }, '<')
-
-    // 6. Soft pink flash for transition
-    .to(flash, { opacity: 1, duration: 0.3, ease: 'power2.in' }, '-=0.3')
-    .to(flash, { opacity: 0, duration: 0.8, ease: 'power2.out' }, '+=0.1')
-
     // 7. Fade out scene
     .to(scenes.envelope, { opacity: 0, duration: 0.01 }, '<');
 }
