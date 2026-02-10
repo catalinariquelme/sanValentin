@@ -264,7 +264,7 @@ function draw() {
   const w = innerWidth, h = innerHeight;
 
   // Solid dark background — no trails, no ghosting
-  ctx.fillStyle = '#08080f';
+  ctx.fillStyle = '#282a36';
   ctx.fillRect(0, 0, w, h);
 
   for (const o of orbs) {
